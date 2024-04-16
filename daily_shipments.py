@@ -5,25 +5,47 @@ from streamlit_folium import st_folium
 import folium
 from folium.plugins import MarkerCluster
 
+
 # page config
 st.set_page_config(page_title='Daily Shipment List', layout='wide', initial_sidebar_state='expanded')
+st.title ('Daily Avaiable to Ship List & Map')
+
 
 def create_shipment_list(conn):
     # Create Streamlit components
     with st.container():
         with st.expander('Daily Available to Ship List', expanded=True):
+            # Define the site group mapping
+            sites_groups = {
+                'AMJK': ['SW','BP', 'CT'],
+                'TXAS': ['SW'],
+                'AMIN': ['SW'],
+                'AMAZ': ['SW'],
+                'PFCH': ['SW'],
+                'AMSC': ['BP'],
+                'VAMT': ['BP']
+            }
+
+            def get_sites(group):
+                if group in sites_groups:
+                    return sites_groups[group]
+                else:
+                    return None
+                
             col1, col2, col3, col4 = st.columns(4)
             with col1:
                 selected_date = st.date_input('Choose a date', format="YYYY-MM-DD")
 
             with col2:
-                qry = f'select distinct site from shipments'
-                site = pd.read_sql_query(qry, conn)
-                selected_site = st.selectbox('Select a Site', site)
+                selected_site = st.selectbox("Select a site:", sorted(sites_groups.keys()))
+                
             with col3:
-                qry = f'select distinct product_group from shipments'
-                pg = pd.read_sql_query(qry, conn)
-                selected_pg = st.selectbox('Select a Product Group', pg)
+                corresponding_groups = get_sites(selected_site)
+                if corresponding_groups:
+                    selected_group = st.selectbox("Select a group:", corresponding_groups)
+                    
+                else:
+                    st.write("No groups found for the selected site.")
             with col4:
                 qry = f'select distinct rpt_run_time from shipments'
                 run_time = pd.read_sql_query(qry, conn)
@@ -41,43 +63,17 @@ def create_shipment_list(conn):
             "GROUP BY s.bl_number "
             "ORDER BY s.state, s.ship_to_city ASC;")
             
-            df = pd.read_sql_query(qry, conn, params=(selected_site, selected_pg, selected_date.strftime("%Y-%m-%d"), selected_time))
+            df = pd.read_sql_query(qry, conn, params=(selected_site, selected_group, selected_date.strftime("%Y-%m-%d"), selected_time))
             st.dataframe(df)
-            st.write(f'Total {len(df)} records')
+            # Calculate sum of net_pick_weight and total_number_of_pallet columns
+            net_weight = df['net_pick_weight'].sum()
+            nbr_pallet = df['total_number_of_pallet'].sum()
+
+            # Write the combined information in one line 
+            st.write(f"Total net weight: {net_weight:,}, Total number of pallets: {nbr_pallet}")
             return df
 
-# def create_map(df):
-#     with st.container():
-#         with st.expander('Daily Available to Ship Map', expanded=True):
-#             # Display the map using Folium
-#             def add_tooltip(row, marker):
-#                 tooltip = "{}<br>{}<br>Weight: {}<br>Pallets: {}".format(
-#                     row["bl_number"], row["ship_to_customer"], row["net_pick_weight"], row["total_number_of_pallet"])
-#                 folium.Marker(location=[row["lat"], row["lng"]], tooltip=tooltip).add_to(marker)
-            
-#             df = df.dropna(subset=['lat', 'lng'])
-            
-#             # Create the map
-#             m = folium.Map(location=[df["lat"].mean(), df["lng"].mean()], zoom_start=4)
 
-#             # Add marker cluster to the map
-#             marker_cluster = MarkerCluster().add_to(m)
-
-#             # Add each point to the marker cluster with tooltip
-#             for index, row in df.iterrows():
-#                 if not pd.isna(row["lat"]) and not pd.isna(row["lng"]):
-#                     add_tooltip(row, marker_cluster)
-
-#             # Display the map in Streamlit
-#             st_data = st_folium(m, width=950)
-
-
-
-import pandas as pd
-import folium
-from folium.plugins import MarkerCluster
-import streamlit as st
-from streamlit_folium import folium_static as st_folium
 
 def create_map(df):
     with st.container():
@@ -112,12 +108,7 @@ def create_map(df):
                 add_tooltip(row, marker_cluster)
 
             # Display the map in Streamlit
-            st_data = st_folium(m, width=1900)
-
-# Example usage:
-# create_map(df)
-
-
+            st_data = st_folium(m, width=950)
 
 # usage:
 
