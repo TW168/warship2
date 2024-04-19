@@ -37,7 +37,12 @@ def create_shipment_list(conn):
                 selected_date = st.date_input('Choose a date', format="YYYY-MM-DD")
 
             with col2:
-                selected_site = st.selectbox("Select a site:", sorted(sites_groups.keys()))
+                sorted_sites = sorted(sites_groups.keys())
+                if 'AMJK' in sorted_sites:
+                    sorted_sites.remove('AMJK')
+                    sorted_sites.insert(0, 'AMJK')  # Move 'AMJK' to the first position
+                selected_site = st.selectbox("Select a site:", sorted_sites)
+                # selected_site = st.selectbox("Select a site:", sorted(sites_groups.keys()))
                 
             with col3:
                 corresponding_groups = get_sites(selected_site)
@@ -47,13 +52,13 @@ def create_shipment_list(conn):
                 else:
                     st.write("No groups found for the selected site.")
             with col4:
-                qry = f'select distinct rpt_run_time from shipments'
+                qry = f'select distinct rpt_run_time from shipments order by rpt_run_time asc'
                 run_time = pd.read_sql_query(qry, conn)
                 selected_time = st.selectbox('Select the Hour', run_time)
         
             st.divider()
             # Daily available to ship list with lat and lng
-            qry = ("SELECT s.site, s.product_group, s.bl_number, s.ship_to_customer, s.ship_to_city, s.state, "
+            qry = ("SELECT s.site, s.product_group, s.bl_number, s.ship_to_customer, s.truck_appointment_date, s.ship_to_city, s.state, "
             "SUM(s.pick_weight) AS net_pick_weight, SUM(s.number_of_pallet) AS total_number_of_pallet, "
             "c.lat, c.lng "
             "FROM shipments s "

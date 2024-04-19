@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from utils.tomorrow_shipments import ftl, ltl, inteplast_shipments
+from utils.tomorrow_shipments import ftl, ltl, ip_shipments
 
 
 st.write("Tomorrow")
@@ -24,22 +24,23 @@ ltl_df = ltl(selected_date, selected_site, selected_group, selected_date)
 tomorrow_ltl_wt = "{:,.0f}".format(ltl_df["SUM(pick_weight)"].sum())
 tomorrow_ltl_plt = "{:,.0f}".format(ltl_df["SUM(number_of_pallet)"].sum())
 
-inteplast_shipment_df = inteplast_shipments(
+ip_shipments_df = ip_shipments(
     selected_date, selected_site, selected_group, selected_date
 )
-inteplast_shipment_df = inteplast_shipment_df.rename(
-    columns={
-        "bl_number": "BL Number",
-        "carrier_id": "Carrier",
-        "truck_appointment_date": "Appointment Date",
-        "SUM(pick_weight)": "LBS",
-        "SUM(number_of_pallet)": "PLT",
-        "ship_to_customer": "Plant",
-    }
-)
-inteplast_shipment_df["LBS"] = inteplast_shipment_df["LBS"].apply(
-    lambda x: "{:,.0f}".format(x)
-)
+df = ip_shipments_df[['ship_to_customer', 'SUM(pick_weight)', 'SUM(number_of_pallet)']]
+# Group by "ship_to_customer" and sum "SUM(pick_weight)" and "SUM(number_of_pallet)"
+grouped_df = ip_shipments_df.groupby("ship_to_customer").agg({
+    "SUM(pick_weight)": "sum",
+    "SUM(number_of_pallet)": "sum"
+}).reset_index()
+
+# Rename columns for clarity
+grouped_df = grouped_df.rename(columns={
+    "ship_to_customer":"Plant",
+    "SUM(pick_weight)": "LBS",
+    "SUM(number_of_pallet)": "PLT"
+})
+
 
 st.write(selected_site + " Tomorrow's Shipment Summary:")
 summary_data = {
@@ -49,4 +50,6 @@ summary_data = {
 }
 summary_table = pd.DataFrame(summary_data)
 st.table(summary_table)
-st.table(inteplast_shipment_df)
+# Display the grouped DataFrame
+st.table(grouped_df)
+

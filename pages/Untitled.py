@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.interanl_shipments_ym import shipments_to_customer
+from utils.internal_shipments_ym import shipments_to_customer
 
 def display_customer_data(customer):
     try:
