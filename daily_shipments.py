@@ -57,7 +57,7 @@ def create_shipment_list(conn):
             "SUM(s.pick_weight) AS net_pick_weight, SUM(s.number_of_pallet) AS total_number_of_pallet, "
             "c.lat, c.lng "
             "FROM shipments s "
-            "LEFT JOIN coordinates c ON s.ship_to_city = upper(c.city_ascii) AND s.state = upper(c.state_id) "
+            "LEFT JOIN coordinates c ON upper(s.ship_to_city) = upper(c.city_ascii) AND upper(s.state) = upper(c.state_id) "
             "WHERE s.site = ? AND s.product_group = ? AND DATE(s.rpt_run_date) = ? AND s.rpt_run_time = ? "
             "AND s.truck_appointment_date IS NULL AND s.product_code NOT LIKE 'INSERT%' AND s.bl_number NOT LIKE 'WZ%' "
             "GROUP BY s.bl_number "
