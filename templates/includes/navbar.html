@@ -1,0 +1,67 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <!-- Logo -->
+    <a class="navbar-brand" href="/">
+      <img src="{% static 'images/stretch-films-icon.png' %}" alt="Logo" height="80" width="auto">
+    </a>
+    <!-- Toggler for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+      aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- Navbar Links -->
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav ms-auto">
+        <!-- Warehouse Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="warehouseDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Warehouse
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="warehouseDropdown">
+            <li><a class="dropdown-item" href="/warehouse/dashboard">Dashboard</a></li>
+          </ul>
+        </li>
+        <!-- Shipping Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="shippingDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Shipping
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="shippingDropdown">
+            <li><a class="dropdown-item" href="#">Dashboard</a></li>
+          </ul>
+        </li>
+        <!-- TSR Item -->
+        <li class="nav-item">
+          <a class="nav-link" href="#">TSR Prep</a>
+        </li>
+        <!-- Report Item -->
+        <li class="nav-item">
+          <a class="nav-link" href="/report/report">Meeting Report</a>
+        </li>
+        <!-- Presentation Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="presentationDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Presentation
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="presentationDropdown">
+            <li><a class="dropdown-item" href="#">For Internal Use</a></li>
+          </ul>
+        </li>
+        <!-- About Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="aboutDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            About
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="aboutDropdown">
+            <li><a class="dropdown-item" href="/about/contact">Contact</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hourly Stacker Stats</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Hourly Stacker Stats</h1>
+    <p>Last Update: {{ max_dt }}</p>
+    <div>
+        {% for stacker, chart in stacker_charts.items %}
+            <h2>Stacker {{ stacker }}</h2>
+            <div>{{ chart|safe }}</div>
+        {% endfor %}
+    </div>
+</body>
+</html>

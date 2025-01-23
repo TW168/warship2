@@ -1,0 +1,17 @@
+<!-- report/templates/report/submit_report.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Submit Report{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Submit Your Report</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

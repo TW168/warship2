@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Warship2 - Warehouse Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h1 class="text-center">Warehouse Dashboard</h1>
+    <p class="text-muted text-center">Last Update: {{ max_dt }}</p>
+
+    <!-- Pie Charts -->
+    <h2 class="text-center">Hourly Stacker Status Distribution</h2>
+    <div class="charts-container d-flex flex-nowrap overflow-auto">
+        {% for chart in stacker_charts %}
+        <div class="chart">
+            {{ chart|safe }}
+        </div>
+        {% endfor %}
+    </div>
+    {% if stacker_charts|length == 0 %}
+    <p class="text-center text-muted">No stacker data available to display charts.</p>
+    {% endif %}
+
+    <!-- Heatmap -->
+    <div class="heatmap mb-5">
+        <h2 class="text-center">ASH Event Heatmap</h2>
+        <div class="chart-container">
+            {{ heatmap_div|safe }}
+        </div>
+    </div>
+
+    <!-- Monthly Trends and Cumulative Trends (Side by Side) -->
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <h3 class="text-center">Monthly Trends of Pallet Entry</h3>
+            <div class="chart-container">
+                {{ chart1|safe }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3 class="text-center">Cumulative Over/Underproduction Trends</h3>
+            <div class="chart-container">
+                {{ chart2|safe }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Descriptions for Monthly and Cumulative Trends -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="description mt-3">
+                <p>{{ chart1_description|safe }}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="description mt-3">
+                <p>{{ chart2_description|safe }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
